@@ -49,7 +49,7 @@ export default function Lobby() {
                         id='email'
                         className='bg-gray-50 border border-gray-300 text-black text-sm rounded-lg block w-full p-2.5'
                         placeholder='Enter email'
-                        autoComplete='off'
+                        // autoComplete='off'
                         required
                     />
                 </div>
@@ -67,7 +67,7 @@ export default function Lobby() {
                         id='room-id'
                         className='bg-gray-50 border border-gray-300 text-black text-sm rounded-lg block w-full p-2.5 '
                         placeholder='Enter room id'
-                        autoComplete='off'
+                        // autoComplete='off'
                         required
                     />
                 </div>

@@ -13,29 +13,47 @@ export default function RoomPage() {
         setRemoteSocketId(data.id)
     }, [])
 
-    const handleInComingCall = useCallback(({ from, offer }) => {
-        console.log(`incoming call ${from} , ${offer}`)
-    }, [])
-
     const handleCall = useCallback(async () => {
         const stream = await navigator.mediaDevices.getUserMedia({
             audio: true,
             video: true,
         })
+        setMyStream(stream)
         const offer = await peer.getOffer()
         socket.emit('user:call', { to: remoteSocketId, offer })
-        setMyStream(stream)
     }, [remoteSocketId, socket])
+
+    const handleInComingCall = useCallback(
+        async ({ from, offer }) => {
+            setRemoteSocketId(from)
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: true,
+                video: true,
+            })
+            setMyStream(stream)
+            console.log(`incoming call`, from, offer)
+            const ans = await peer.getAnswer(offer)
+            socket.emit('call:accepted', { to: from, ans })
+        },
+        [socket]
+    )
+
+    const handleCallAccepted = useCallback(async ({ from, ans }) => {
+        await peer.setLocalDescription()
+        console.log('Call Accepted')
+    }, [])
 
     useEffect(() => {
         socket.on('user:joined', handleUserJoined)
         socket.on('incoming:call', handleInComingCall)
+        socket.on('call:accepted', handleCallAccepted)
 
         return () => {
             socket.off('user:joined', handleUserJoined)
             socket.off('incoming:call', handleInComingCall)
+            socket.off('call:accepted', handleCallAccepted)
         }
-    }, [socket, handleUserJoined, handleInComingCall])
+    }, [socket, handleUserJoined, handleInComingCall, handleCallAccepted])
 
     return (
         <>

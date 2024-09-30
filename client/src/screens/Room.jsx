@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useSocket } from '../providers/Socket'
 import ReactPlayer from 'react-player'
 import peer from '../service/peer'
+import { Link } from 'react-router-dom'
 
 export default function RoomPage() {
     const [remoteSocketId, setRemoteSocketId] = useState(null)
@@ -39,15 +40,19 @@ export default function RoomPage() {
         [socket]
     )
 
+    const sendStreams = useCallback(() => {
+        for (const track of myStream.getTracks()) {
+            peer.peer.addTrack(track, myStream)
+        }
+    }, [myStream])
+
     const handleCallAccepted = useCallback(
         async ({ from, ans }) => {
             await peer.setLocalDescription(ans)
             console.log('Call Accepted')
-            for (const track of myStream.getTracks()) {
-                peer.peer.addTrack(track, myStream)
-            }
+            sendStreams()
         },
-        [myStream]
+        [sendStreams]
     )
 
     const handleNegoNeeded = useCallback(async () => {
@@ -56,8 +61,8 @@ export default function RoomPage() {
     }, [remoteSocketId, socket])
 
     const handleNegoNeedIncoming = useCallback(
-        ({ from, offer }) => {
-            const ans = peer.getAnswer(offer)
+        async ({ from, offer }) => {
+            const ans = await peer.getAnswer(offer)
             socket.emit('peer:nego:done', { to: from, ans })
         },
         [socket]
@@ -78,7 +83,8 @@ export default function RoomPage() {
     useEffect(() => {
         peer.peer.addEventListener('track', async (ev) => {
             const remoteStream = ev.streams
-            setRemoteStream(remoteStream)
+            console.log('Got Tracks, remoteStream', remoteStream)
+            setRemoteStream(remoteStream[0])
         })
     }, [])
 
@@ -109,6 +115,7 @@ export default function RoomPage() {
         <>
             <h1 className='text-3xl font-bold underline'>Hello in room page</h1>
             <h4>{remoteSocketId ? 'Connected' : 'No one in the room'}</h4>
+            {myStream && <button onClick={sendStreams}>Send Stream</button>}
             {remoteSocketId && <button onClick={handleCall}>Call</button>}
             {myStream && (
                 <>
@@ -134,6 +141,7 @@ export default function RoomPage() {
                     />
                 </>
             )}
+            <Link to={'/'}>Lobby</Link>
         </>
     )
 }

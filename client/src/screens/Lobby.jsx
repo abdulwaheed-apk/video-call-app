@@ -33,7 +33,7 @@ export default function Lobby() {
     }, [socket, handleJoinRoom])
 
     return (
-        <div className='w-[480px] max-h-max bg-gray-100 shadow-sm rounded-lg m-auto mt-20 pt-4 pb-2'>
+        <div className='w-[480px] max-h-max bg-gray-100 shadow-md rounded-lg m-auto mt-20 pt-4 pb-2'>
             <form onSubmit={handleSubmitForm}>
                 <div className='mb-6 w-11/12 mx-auto text-left'>
                     <label
@@ -74,9 +74,9 @@ export default function Lobby() {
                 <div className='mb-6 w-11/12 mx-auto'>
                     <button
                         type='submit'
-                        className='w-full bg-purple-500 hover:bg-purple-700 text-white outline-none font-bold py-2 px-4 rounded'
+                        className='w-full bg-red-500 hover:bg-red-600 text-white outline-none font-bold py-2 px-4 rounded'
                     >
-                        Submit
+                        Join Meeting Room
                     </button>
                 </div>
             </form>

@@ -48,7 +48,7 @@ export default function Lobby() {
                         type='email'
                         id='email'
                         className='bg-gray-50 border border-gray-300 text-black text-sm rounded-lg block w-full p-2.5'
-                        placeholder='Enter email'
+                        placeholder='john@email.com'
                         // autoComplete='off'
                         required
                     />
@@ -66,7 +66,7 @@ export default function Lobby() {
                         type='text'
                         id='room-id'
                         className='bg-gray-50 border border-gray-300 text-black text-sm rounded-lg block w-full p-2.5 '
-                        placeholder='Enter room id'
+                        placeholder='abc123'
                         // autoComplete='off'
                         required
                     />
